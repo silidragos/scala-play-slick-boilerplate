@@ -1,0 +1,8 @@
+/target/
+/project/
+/.settings/
+/logs/
+/bin/
+.eclipse
+.cache-main
+.cache-tests
