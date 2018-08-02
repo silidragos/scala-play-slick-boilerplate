@@ -6,5 +6,11 @@
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index
 
+#Tweets
+GET     /tweets                     controllers.HomeController.findAllTweets
+GET     /tweet/:tweetId             controllers.HomeController.findTweet(tweetId: Int)
+POST    /tweet						controllers.HomeController.createTweet
+DELETE  /tweet/:tweetId				controllers.HomeController.deleteTweet(tweetId: Int)
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

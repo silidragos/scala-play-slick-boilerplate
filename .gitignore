@@ -6,3 +6,4 @@
 .eclipse
 .cache-main
 .cache-tests
+.classpath

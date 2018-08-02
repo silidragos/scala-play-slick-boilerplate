@@ -1,24 +1,40 @@
 package controllers
 
 import javax.inject._
-import play.api._
 import play.api.mvc._
+import play.api.libs.json._
+import models.{TweetRepo, Tweet}
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
-/**
- * This controller creates an `Action` to handle HTTP requests to the
- * application's home page.
- */
 @Singleton
-class HomeController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
+class HomeController @Inject()(tweetRepo: TweetRepo, cc: ControllerComponents) extends AbstractController(cc) {
 
-  /**
-   * Create an Action to render an HTML page.
-   *
-   * The configuration in the `routes` file means that this method
-   * will be called when the application receives a `GET` request with
-   * a path of `/`.
-   */
   def index() = Action { implicit request: Request[AnyContent] =>
-    Ok("Welcome!")
+    Ok("Welcome Home!")
+  }
+  
+  def findAllTweets = Action.async{ implicit request =>
+    tweetRepo.all.map( tweets =>
+      Ok(Json.toJson(tweets))  
+    )  
+  }
+  
+  def findTweet(tweetId: Int) = Action.async{ implicit request =>
+    tweetRepo.findById(tweetId).map( tweet =>
+      Ok(Json.toJson(tweet.get))  
+    )  
+  }
+  
+  
+  def createTweet() = Action.async(parse.json){ implicit request: Request[JsValue] =>
+    val tweet = request.body.as[Tweet]
+    tweetRepo.add(tweet).map(id =>
+      Ok(s"Got new tweet with id $id and body " + (request.body \ "body").as[String])
+    )
+  }
+  
+  def deleteTweet(tweetId: Int) = Action.async{ implicit request =>
+    tweetRepo.delete(tweetId).map(count => Ok(s"$count tweets deleted!"))
   }
 }
