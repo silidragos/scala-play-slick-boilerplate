@@ -9,15 +9,19 @@ import slick.dbio.Effect.Read
 import slick.jdbc.JdbcProfile
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-  
-case class Tweet(id: Long, body:String)
+import java.sql.Timestamp
+
+import services.TimestampUtils.timestampFormat
+
+case class Tweet(id: Long, body:String, addedTime: Timestamp)
 
 object Tweet{
 //  implicit val format = Json.WithDefaultValues.format[Tweet]
   
   implicit val tweetReads: Reads[Tweet] = (
       (JsPath \ "id").read[Long] orElse Reads.pure(0L) and
-      (JsPath \ "body").read[String]
+      (JsPath \ "body").read[String] and
+      Reads.pure(new Timestamp(System.currentTimeMillis()))
       )(Tweet.apply _)
       
   implicit val tweetWrites: Writes[Tweet] = Json.writes[Tweet]
@@ -42,8 +46,15 @@ class TweetRepo @Inject()(protected val dbConfigProvider: DatabaseConfigProvider
   def all: Future[Seq[Tweet]] = 
     db.run(Tweets.to[List].result)
     
+  def findLast(nrOfTweets : Int) : Future[Seq[Tweet]] =
+    db.run(Tweets.sortBy(_.addedTime.desc.nullsLast).take(nrOfTweets).result)
+    
     def add(tweet: Tweet): Future[Long] = 
       db.run((Tweets returning Tweets.map(_.id)) += tweet)
+      
+  def update(tweet: Tweet): Future[Int] = {
+    db.run(Tweets.insertOrUpdate(tweet))
+  }
       
     def delete(id: Long): Future[Int] = 
        db.run(Tweets.filter(_.id === id).delete)
@@ -51,8 +62,9 @@ class TweetRepo @Inject()(protected val dbConfigProvider: DatabaseConfigProvider
    private[models] class TweetsTable(tag: Tag) extends Table[Tweet](tag, "tweets"){
     def id = column[Long]("id", O.AutoInc, O.PrimaryKey)
     def body = column[String]("body")
+    def addedTime = column[Timestamp]("added_time")
     
-    def * = (id, body) <> (Tweet.tupled, Tweet.unapply)
+    def * = (id, body, addedTime) <> (Tweet.tupled, Tweet.unapply)
     
   }
 }

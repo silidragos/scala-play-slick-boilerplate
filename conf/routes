@@ -5,11 +5,12 @@
 
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index
-
+GET		/with-auth					controllers.HomeController.indexWithAuth
 #Tweets
-GET     /tweets                     controllers.HomeController.findAllTweets
+GET     /tweets                     controllers.HomeController.findLastXTweets(count: Option[Int])
 GET     /tweet/:tweetId             controllers.HomeController.findTweet(tweetId: Int)
 POST    /tweet						controllers.HomeController.createTweet
+PUT     /tweet             			controllers.HomeController.updateTweet
 DELETE  /tweet/:tweetId				controllers.HomeController.deleteTweet(tweetId: Int)
 
 # Map static resources from the /public folder to the /assets URL path
