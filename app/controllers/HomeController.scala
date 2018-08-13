@@ -7,20 +7,16 @@ import models.{TweetRepo, Tweet}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-import security.BasicAuthentication
+import middlewares.LoggedAction 
+
 import models.UserRepository
+import security.BasicAuth
 
 @Singleton
-class HomeController @Inject()(userRepository: UserRepository ,tweetRepo: TweetRepo, cc: ControllerComponents) extends AbstractController(cc) {
+class HomeController @Inject()(userRepository: UserRepository ,tweetRepo: TweetRepo, basicAuth: BasicAuth, cc: ControllerComponents) extends AbstractController(cc) {
 
-  def index() = Action { implicit request: Request[AnyContent] =>
-    Ok("Welcome Home!")
-  }
-  
-  def indexWithAuth() = BasicAuthentication(userRepository.findUser){
-    Action{ implicit request =>
-      Ok("Authorized request!")
-    }
+  def index() = basicAuth{ implicit request =>
+        Ok(s"Welcome Home! ${request.user.username} , ${request.user.password}")
   }
   
   def findLastXTweets(count: Option[Int]) = Action.async{ implicit request =>
