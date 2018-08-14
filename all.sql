@@ -3,3 +3,10 @@ CREATE TABLE tweet(
 	body TEXT,
 	added_time TIMESTAMP
 );
+
+CREATE TABLE users(
+	id SERIAL PRIMARY KEY,
+	unique_id VARCHAR(52) UNIQUE NOT NULL,
+	username VARCHAR(52),
+	password VARCHAR(256)
+);

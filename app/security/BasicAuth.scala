@@ -26,9 +26,8 @@ class BasicAuth @Inject() (val parser: BodyParsers.Default, val ec: ExecutionCon
       val authInfo = new String(Base64.getDecoder().decode(encoded.getBytes)).split(":").toList
       (authInfo.head, authInfo(1))
     })
-    .map(resultTuple => block(AuthenticatedRequest(User(1, resultTuple._1, resultTuple._2), request)))
+    .map(resultTuple => block(AuthenticatedRequest(User(1,"uuid", resultTuple._1, resultTuple._2), request)))
     .getOrElse(Future.successful(Unauthorized("No account. Sry :( ")))
-    
   }
   
   override def executionContext = ec
