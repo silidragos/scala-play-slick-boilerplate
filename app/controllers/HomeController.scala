@@ -16,7 +16,7 @@ import security.BasicAuth
 class HomeController @Inject()(userRepository: UserRepository ,tweetRepo: TweetRepo, basicAuth: BasicAuth, cc: ControllerComponents) extends AbstractController(cc) {
 
   def index() = basicAuth{ implicit request =>
-        Ok(s"Welcome Home! ${request.user.username} , ${request.user.password}")
+    Ok(s"Welcome Home, ${request.user.username}!")
   }
   
   def findLastXTweets(count: Option[Int]) = Action.async{ implicit request =>

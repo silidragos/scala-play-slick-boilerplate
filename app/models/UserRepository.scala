@@ -24,6 +24,16 @@ class UserRepository  @Inject()(protected val dbConfigProvider: DatabaseConfigPr
   
   def findUserByCredentials(username: String, password: String): Future[Option[User]] = {
     db.run(Users.filter(_.username === username).result.headOption)
+    .map(u => u match { 
+        case Some(u) => {
+          if(u.password.equals(password)) Some(u) else None 
+        }
+        case None => None
+      })
+  }
+  
+  def findByUniqueUserId(userId: String): Future[Option[User]] = {
+    db.run(Users.filter(_.uniqueId === userId).result.headOption)
   }
   
    private[models] class UsersTable(tag: Tag) extends Table[User](tag, "users"){
