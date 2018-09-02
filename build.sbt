@@ -15,7 +15,11 @@ libraryDependencies ++= Seq(
   	"com.typesafe.play" %% "play-slick-evolutions" % "3.0.0"
 )
 
+//Utils
 libraryDependencies += "com.github.nscala-time" %% "nscala-time" % "2.20.0"
+
+//Security
+libraryDependencies += "org.mindrot" % "jbcrypt" % "0.3m"
 libraryDependencies += "io.igl" %% "jwt" % "1.2.2"
 
 // Adds additional packages into Twirl

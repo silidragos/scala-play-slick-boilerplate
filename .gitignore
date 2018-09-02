@@ -7,3 +7,9 @@
 .cache-main
 .cache-tests
 .classpath
+
+# IntelliJ project files 
+*.iml
+*.iws
+*.ipr
+.idea/

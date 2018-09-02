@@ -3,12 +3,12 @@ package controllers
 import javax.inject._
 import play.api.mvc._
 import play.api.libs.json._
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-
-import middlewares.LoggedAction 
-
+import middlewares.LoggedAction
 import models.UserRepository
+import play.mvc.Http.HeaderNames
 import services.JWTService
 import security.BasicAuth
 
@@ -17,7 +17,6 @@ class UserController @Inject()(userRepository: UserRepository, jwtService: JWTSe
   extends AbstractController(cc) {
   
   def userLogin() = Action.async(parse.json){ implicit request : Request[JsValue] =>
-    println("Entered login()")
     val username = (request.body \ "username").as[String]
     val password = (request.body \ "password").as[String]
     
@@ -26,9 +25,21 @@ class UserController @Inject()(userRepository: UserRepository, jwtService: JWTSe
     
     userRepository.findUserByCredentials(username, password).map(userOption => {
           userOption match {
-            case Some(u) => Ok(s"Welcome ${jwtService.getTokenForUser(u.uniqueId)}")
+            case Some(u) => Ok(s"Welcome ${username}")
+              .withHeaders("Token" -> jwtService.getTokenForUser((u.uniqueId)))
             case None => Unauthorized("User doesn't exist!")
           }
     })
+  }
+
+  def userRegister() = Action.async(parse.json){implicit request: Request[JsValue] =>
+    val username = (request.body \ "username").as[String]
+    val password= (request.body \ "password").as[String]
+
+    userRepository.registerUser(username, password).map(registeredUsername =>
+      Ok(s"Welcome, ${registeredUsername}")
+    ).recover{
+      case e: Exception => BadRequest("Couldn't register: " + e.getMessage)
+    }
   }
 }

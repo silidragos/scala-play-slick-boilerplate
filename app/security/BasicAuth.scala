@@ -18,6 +18,8 @@ import services.JWTService
 case class AuthenticatedRequest[A](val user:User, val request: Request[A]) 
   extends WrappedRequest[A](request)
 
+
+//TODO: Need to check if JWT expires
 class BasicAuth @Inject() (val parser: BodyParsers.Default, val jwtService:JWTService, val userRepository:UserRepository, val ec: ExecutionContext) 
   extends ActionBuilder[AuthenticatedRequest, AnyContent]{
   def invokeBlock[A](

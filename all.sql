@@ -7,6 +7,6 @@ CREATE TABLE tweet(
 CREATE TABLE users(
 	id SERIAL PRIMARY KEY,
 	unique_id VARCHAR(52) UNIQUE NOT NULL,
-	username VARCHAR(52),
-	password VARCHAR(256)
+	username VARCHAR(52) UNIQUE NOT NULL,
+	password VARCHAR(256 NOT NULL)
 );

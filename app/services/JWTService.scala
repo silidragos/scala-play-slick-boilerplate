@@ -16,7 +16,7 @@ class JWTService {
     return jwt.encodedAndSigned(secret)  
   }
   
-  def validateToken(jwt : String) : Try[Jwt] = 
+  def validateToken(jwt : String) : Try[Jwt] =
     DecodedJwt.validateEncodedJwt(
       jwt,
       secret,
