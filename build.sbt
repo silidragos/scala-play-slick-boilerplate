@@ -22,6 +22,9 @@ libraryDependencies += "com.github.nscala-time" %% "nscala-time" % "2.20.0"
 libraryDependencies += "org.mindrot" % "jbcrypt" % "0.3m"
 libraryDependencies += "io.igl" %% "jwt" % "1.2.2"
 
+//Test
+libraryDependencies += "com.h2database" % "h2" % "1.4.192"
+
 // Adds additional packages into Twirl
 //TwirlKeys.templateImports += "com.dragos.controllers._"
 

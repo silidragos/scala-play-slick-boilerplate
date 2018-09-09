@@ -5,12 +5,8 @@ import play.api.mvc._
 import play.api.libs.json._
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
-import middlewares.LoggedAction
 import models.UserRepository
-import play.mvc.Http.HeaderNames
 import services.JWTService
-import security.BasicAuth
 
 @Singleton
 class UserController @Inject()(userRepository: UserRepository, jwtService: JWTService,  cc: ControllerComponents) 
